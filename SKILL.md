@@ -1,11 +1,14 @@
 ---
 name: make-pages-interactive
-description: Turn a directory of static HTML pages into a live commenting surface. Injects a feedback library, starts a tiny server, and routes user comments into a JSONL inbox that the agent monitors and responds to by editing the pages. Trigger phrases — "make this page interactive", "make these pages interactive", "let me comment on this page", "add feedback to these pages".
+description: Turn a directory of static HTML pages OR any running app (given its URL) into a live commenting surface. Static dirs get a feedback library injected and served by a tiny server; running apps are instrumented via a reverse proxy that injects the widget into live HTML. User comments route into a JSONL inbox that the agent monitors and responds to by editing the pages (or the app's source). Trigger phrases — "make this page interactive", "make these pages interactive", "make <url> interactive", "let me comment on this page", "let me comment on this running app <url>", "add feedback to these pages".
+argument-hint: [url-or-directory]
 ---
 
 # Make Pages Interactive
 
 Turns any folder of HTML files into a place the user can leave inline comments on (text selections, element selections, page-level notes). Comments POST to a local JSONL inbox; you (the agent) Monitor that inbox, edit the HTML in response, append to `feedback/history.json`, and the page auto-reloads with a walkthrough of what changed.
+
+**Argument routing:** If the skill is invoked with an argument (`$arguments`), treat it as the target. If it looks like a URL (starts with `http://`/`https://`, or `host:port` / `localhost…`) → use the **Live app flow** below. Otherwise treat it as a directory path → use the **Setup flow** below. If no argument is given, infer the target from the user's message, and ask only if it's ambiguous.
 
 ## When to invoke
 
